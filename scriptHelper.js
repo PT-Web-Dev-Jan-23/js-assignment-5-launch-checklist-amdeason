@@ -1,3 +1,5 @@
+const { getElementError } = require('@testing-library/dom');
+
 // Write your helper functions here!
 require('isomorphic-fetch');
 
@@ -32,10 +34,60 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
 
     form.addEventListener("submit", (event) => {
         input = [ pilot.value, copilot.value, fuelLevel.value, cargoMass.value ];
+        let errMsg = "";
 
-        let isValid = input.every( (element, index)  => {
-            
+        const isNotEmpty = (input) => {
+            let isValid = validateInput(input) !== "Empty";
+            if (!isValid) 
+                errMsg = "All fields are required.";
+            return isValid;
+        }
+
+        const isCorrectType = (input, index) => {
+            let isValid = (index < 2 && validateInput(input) === "Not a Number") || (index >= 2 && validateInput(input) === "Is a Number");
+            if (!isValid)
+                errMsg = "Make sure to enter valid information for each field.";
+            return isValid;
+        }
+
+        let formIsValid = input.every( (element, index)  => { 
+            return isNotEmpty(element) && isCorrectType(element, index); 
         });
+        
+        if (!formIsValid) {
+            alert(errMsg);
+        }
+
+        else {
+            const launchStatus = document.getElementById("launchStatus");
+            const pilotStatus = document.getElementById("pilotStatus"); 
+            const copilotStatus = document.getElementById("copilotStatus");
+            const fuelStatus = document.getElementById("fuelStatus");
+            const cargoStatus = document.getElementById("cargoStatus");
+
+            pilotStatus.innerHTML = `Pilot ${pilot.value} is ready for launch`;
+            copilotStatus.innerHTML = `Copilot ${copilot.value} is ready for launch`;
+            
+            const validFuelLevel = (level) => {
+                if (fuelLevel.value < 10000) {
+                    fuelStatus.innerHTML = "Fuel level too low for launch";
+                    return false;
+                } 
+            }
+
+            const validCargoMass = (mass) => {
+                if (cargoMass.value > 10000) {
+                    cargoStatus.innerHTML = "Cargo mass too high for launch"; 
+                    return false;
+                } 
+            }
+
+            if ( !validFuelLevel(fuelLevel.value) || !validCargoMass(cargoMass.value) ) {
+                list.style.visibility = "visible";
+                launchStatus.style.color = "red";
+            }
+        }
+        event.preventDefault();
     });
 }
 
