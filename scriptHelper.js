@@ -73,6 +73,7 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
                     fuelStatus.innerHTML = "Fuel level too low for launch";
                     return false;
                 } 
+                return true;
             }
 
             const validCargoMass = (mass) => {
@@ -80,14 +81,21 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
                     cargoStatus.innerHTML = "Cargo mass too high for launch"; 
                     return false;
                 } 
+                return true;
             }
 
-            if ( !validFuelLevel(fuelLevel.value) || !validCargoMass(cargoMass.value) ) {
+            if ( !validFuelLevel(fuelLevel.value) || !validCargoMass(cargoMass.value)) {
                 list.style.visibility = "visible";
+                launchStatus.innerHTML = "Shuttle not ready for launch";
                 launchStatus.style.color = "red";
             }
-        }
+
+            else {
+                launchStatus.innerHTML = "Shuttle is ready for launch";
+                launchStatus.style.color = "green";
+            }
         event.preventDefault();
+        }
     });
 }
 
