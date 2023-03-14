@@ -18,13 +18,13 @@ function addDestinationInfo(document, name, diameter, star, distance, moons, ima
     */
     const specName = [ "Name: ", "Diameter: ", "Star: ", "Distance from Earth: ", "Number of Moons: "]
     const spec = [ name, diameter, star, distance, moons ];
-    const container = document.getElementById("missionTarget");
+    const missionTarget = document.getElementById("missionTarget");
     const title = document.createElement("h2");
     const list = document.createElement("ol"); 
     const img = document.createElement("IMG");
 
     title.innerHTML = "Mission Destination";
-    container.appendChild(title);
+    missionTarget.appendChild(title);
 
     missionTarget.appendChild(list);
     for (const index in spec) {
@@ -34,7 +34,7 @@ function addDestinationInfo(document, name, diameter, star, distance, moons, ima
     }
 
     img.src = `${imageUrl}`;
-    container.appendChild(img);
+    missionTarget.appendChild(img);
 }
 
 function validateInput(testInput) {
@@ -77,7 +77,6 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
         if (!formIsValid) {
             alert(errMsg);
         }
-
         else {
             const launchStatus = document.getElementById("launchStatus");
             const pilotStatus = document.getElementById("pilotStatus"); 
@@ -104,8 +103,9 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
                 return true;
             }
 
+            list.style.visibility = "visible";
+
             if ( !validFuelLevel(fuelLevel.value) || !validCargoMass(cargoMass.value)) {
-                list.style.visibility = "visible";
                 launchStatus.innerHTML = "Shuttle not ready for launch";
                 launchStatus.style.color = "red";
             }
